@@ -1,112 +1,173 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
 
-function AdminRegister() {
+function Register() {
   const navigate = useNavigate();
-  const [admin, setAdmin] = useState({
+  const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    phonenumber: "",
     address: "",
-    password: "",
-    role_type: "admin"
+    password: ""
   });
+  const [loading, setLoading] = useState(false);
+  const [errors, setErrors] = useState({});
 
-  const register = async () => {
-    const { name, email, phone, address, password, role_type } = admin;
+  const validateForm = () => {
+    let isValid = true;
+    const newErrors = {};
 
-    if (!name || !email || !phone || !address || !password) {
-      alert("Please fill all fields");
-      return;
+    // Name validation
+    if (!formData.name.trim()) {
+      newErrors.name = "Name is required";
+      isValid = false;
     }
 
+    // Email validation
+    if (!formData.email) {
+      newErrors.email = "Email is required";
+      isValid = false;
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Email is invalid";
+      isValid = false;
+    }
+
+    // Password validation
+    if (!formData.password) {
+      newErrors.password = "Password is required";
+      isValid = false;
+    } else if (formData.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+      isValid = false;
+    }
+
+    setErrors(newErrors);
+    return isValid;
+  };
+
+  const register = async () => {
+    if (!validateForm()) return;
+
+    setLoading(true);
+    setErrors({});
+
     try {
-      const response = await axios.post("http://127.0.0.1:8000/blog/register/", {
-        name: name,
-        email: email,
-        password: password,
-        role_type: role_type,
-        phone: phone,
-        address: address
+      const response = await fetch("http://127.0.0.1:8000/blog/register/", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name,
+          email: formData.email,
+          phonenumber: formData.phonenumber,
+          address: formData.address,
+          password: formData.password,
+        }),
       });
 
-      if (response.status === 200 || response.status === 201) {
-        alert("Admin registered successfully!");
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Registration successful! Please login.");
         navigate("/admin/login");
+      } else {
+        if (data.error.includes("Email already exists")) {
+          setErrors({ email: data.error });
+        } else {
+          setErrors({ general: data.error });
+        }
       }
     } catch (error) {
-      if (error.response) {
-        alert(error.response.data.error || error.response.data.msg || "Registration failed");
-      } else {
-        alert("Network error. Please try again.");
-      }
+      console.error("Registration error:", error);
+      setErrors({ general: "Network error. Please try again." });
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-blue-50">
-      <div className="bg-white p-8 rounded-2xl shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-bold mb-6 text-center text-blue-700">
-          Admin Registration
-        </h2>
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 className="text-2xl font-bold mb-6 text-center text-blue-700">User Registration</h2>
 
-        <div className="space-y-4">
-          <input
-            type="text"
-            placeholder="Full Name"
-            value={admin.name}
-            onChange={(e) => setAdmin({ ...admin, name: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
-          />
-          <input
-            type="email"
-            placeholder="Email"
-            value={admin.email}
-            onChange={(e) => setAdmin({ ...admin, email: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
-          />
-          <input
-            type="tel"
-            placeholder="Phone Number"
-            value={admin.phone}
-            onChange={(e) => setAdmin({ ...admin, phone: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
-          />
-          <textarea
-            placeholder="Address"
-            value={admin.address}
-            onChange={(e) => setAdmin({ ...admin, address: e.target.value })}
-            className="w-full px-3 py-2 border rounded resize-none"
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={admin.password}
-            onChange={(e) => setAdmin({ ...admin, password: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
-          />
+        {errors.general && (
+          <p className="text-red-500 text-sm mb-4 text-center">{errors.general}</p>
+        )}
 
+        <input
+          type="text"
+          placeholder="Full Name *"
+          value={formData.name}
+          onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+          className={`w-full px-3 py-2 border rounded mb-4 ${
+            errors.name ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.name && <p className="text-red-500 text-sm -mt-3 mb-2">{errors.name}</p>}
+
+        <input
+          type="email"
+          placeholder="Email *"
+          value={formData.email}
+          onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+          className={`w-full px-3 py-2 border rounded mb-4 ${
+            errors.email ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.email && <p className="text-red-500 text-sm -mt-3 mb-2">{errors.email}</p>}
+
+        <input
+          type="text"
+          placeholder="Phone Number"
+          value={formData.phonenumber}
+          onChange={(e) => setFormData({ ...formData, phonenumber: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded mb-4"
+        />
+
+        <input
+          type="text"
+          placeholder="Address"
+          value={formData.address}
+          onChange={(e) => setFormData({ ...formData, address: e.target.value })}
+          className="w-full px-3 py-2 border border-gray-300 rounded mb-4"
+        />
+
+        <input
+          type="password"
+          placeholder="Password *"
+          value={formData.password}
+          onChange={(e) => setFormData({ ...formData, password: e.target.value })}
+          className={`w-full px-3 py-2 border rounded mb-6 ${
+            errors.password ? "border-red-500" : "border-gray-300"
+          }`}
+        />
+        {errors.password && <p className="text-red-500 text-sm -mt-3 mb-2">{errors.password}</p>}
+
+        <button
+          onClick={register}
+          disabled={loading}
+          className={`w-full py-2 text-white rounded transition ${
+            loading
+              ? "bg-gray-400 cursor-not-allowed"
+              : "bg-blue-600 hover:bg-blue-700"
+          }`}
+        >
+          {loading ? "Registering..." : "Register"}
+        </button>
+
+        <p className="text-sm text-center text-gray-600 mt-3">
+          Already have an account?{" "}
           <button
-            onClick={register}
-            className="w-full py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition mt-4"
+            onClick={() => navigate("/login")}
+            className="text-blue-600 hover:underline"
           >
-            Register
+            Login
           </button>
-
-          <p className="text-sm text-center text-gray-600 mt-3">
-            Already have an account?{" "}
-            <button
-              onClick={() => navigate("/admin/login")}
-              className="text-blue-600 hover:underline"
-            >
-              Login
-            </button>
-          </p>
-        </div>
+        </p>
       </div>
     </div>
   );
 }
 
-export default AdminRegister;
+export default Register;
