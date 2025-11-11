@@ -2,9 +2,9 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Landing from "./Pages/Landing";
 
 // Admin
-import AdminRegister from "./pages/admin/AdminRegister";
+import AdminRegister from "/src/Pages/admin/AdminRegister.jsx";
 import AdminLogin from "./pages/admin/AdminLogin";
-import AdminDashboard from "/src/Pages/admin/AdminDashboard.jsx";
+import  DashboardLayout from "/src/Pages/admin/AdminDashboard.jsx";
 
 // Sales
 import SalesRegister from "./pages/sales/SalesRegister";
@@ -28,7 +28,7 @@ function App() {
         {/* Admin */}
         <Route path="/admin/register" element={<AdminRegister />} />
         <Route path="/admin/login" element={<AdminLogin />} />
-        <Route path="/admin/dashboard" element={<AdminDashboard />} />
+        <Route path="/admin/dashboard" element={< DashboardLayout />} />
 
         {/* Sales */}
         <Route path="/sales/register" element={<SalesRegister />} />
