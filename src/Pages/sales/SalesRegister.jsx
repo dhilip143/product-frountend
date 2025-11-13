@@ -1,31 +1,64 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function SalesRegister() {
   const navigate = useNavigate();
   const [sales, setSales] = useState({
-    firstName: "",
-    lastName: "",
-    username: "",
-    phone: "",
+    firstname: "",
+    email: "",
+    phonenumber: "",
     address: "",
     password: "",
   });
 
-  const register = () => {
-    const { firstName, lastName, username, phone, address, password } = sales;
+  const register = async () => {
+    const { firstname, email, phonenumber, address, password } = sales;
 
-    if (!firstName || !lastName || !username || !phone || !address || !password) {
+    if (!firstname || !email || !phonenumber || !address || !password) {
       alert("Please fill all fields");
       return;
     }
 
-    const list = JSON.parse(localStorage.getItem("salespersons")) || [];
-    list.push(sales);
-    localStorage.setItem("salespersons", JSON.stringify(list));
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters");
+      return;
+    }
 
-    alert("Salesperson registered successfully!");
-    navigate("/sales/login");
+    try {
+      const response = await axios.post(
+        "http://127.0.0.1:8000/blog/create-sales-register/",
+        {
+          firstname: firstname,
+          email: email,
+          phonenumber: phonenumber,
+          address: address,
+          password: password,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        alert("Salesperson registered successfully!");
+        navigate("/sales/login");
+      }
+    } catch (error) {
+      if (error.response) {
+        // Server responded with error status
+        alert(error.response.data.error || "Registration failed");
+      } else if (error.request) {
+        // Request made but no response received
+        alert("Network error. Please try again.");
+      } else {
+        // Something else happened
+        alert("An error occurred. Please try again.");
+      }
+      console.error("Error:", error);
+    }
   };
 
   return (
@@ -39,48 +72,42 @@ function SalesRegister() {
           <input
             type="text"
             placeholder="First Name"
-            value={sales.firstName}
-            onChange={(e) => setSales({ ...sales, firstName: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            value={sales.firstname}
+            onChange={(e) => setSales({ ...sales, firstname: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
-            type="text"
-            placeholder="Last Name"
-            value={sales.lastName}
-            onChange={(e) => setSales({ ...sales, lastName: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
-          />
-          <input
-            type="text"
-            placeholder="Username"
-            value={sales.username}
-            onChange={(e) => setSales({ ...sales, username: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            type="email"
+            placeholder="Email"
+            value={sales.email}
+            onChange={(e) => setSales({ ...sales, email: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <input
             type="tel"
             placeholder="Phone Number"
-            value={sales.phone}
-            onChange={(e) => setSales({ ...sales, phone: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            value={sales.phonenumber}
+            onChange={(e) => setSales({ ...sales, phonenumber: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           />
           <textarea
             placeholder="Address"
             value={sales.address}
             onChange={(e) => setSales({ ...sales, address: e.target.value })}
-            className="w-full px-3 py-2 border rounded resize-none"
+            className="w-full px-3 py-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-green-500"
+            rows="3"
           />
           <input
             type="password"
             placeholder="Password"
             value={sales.password}
             onChange={(e) => setSales({ ...sales, password: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-green-500"
           />
 
           <button
             onClick={register}
-            className="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition mt-4"
+            className="w-full py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition mt-4 font-semibold"
           >
             Register
           </button>
@@ -89,7 +116,7 @@ function SalesRegister() {
             Already have an account?{" "}
             <button
               onClick={() => navigate("/sales/login")}
-              className="text-green-600 hover:underline"
+              className="text-green-600 hover:underline font-medium"
             >
               Login
             </button>

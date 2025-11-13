@@ -1,8 +1,59 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 
-const AdminDashboard = () => {
-  const navigate = useNavigate();
+const DashboardLayout = () => {
+  const [totalSalesPersons, setTotalSalesPersons] = useState(0);
+  const [totalShops, setTotalShops] = useState(0);
+
+  useEffect(() => {
+    const fetchTotalSalesPersons = async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/blog/get_total_salesregister/"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch total sales person data");
+        }
+
+        const data = await response.json();
+
+        // Updated response handling
+        if (data.count_salesregister !== undefined) {
+          setTotalSalesPersons(data.count_salesregister);
+        } else {
+          setTotalSalesPersons(0);
+        }
+      } catch (error) {
+        console.error("Error fetching total sales person:", error);
+      }
+    };
+
+    const fetchTotalShops = async () => {
+      try {
+        const response = await fetch(
+          "http://127.0.0.1:8000/blog/total-shops/"
+        );
+
+        if (!response.ok) {
+          throw new Error("Failed to fetch total shops data");
+        }
+
+        const data = await response.json();
+
+        // Handle shop count response
+        if (data.count_shop !== undefined) {
+          setTotalShops(data.count_shop);
+        } else {
+          setTotalShops(0);
+        }
+      } catch (error) {
+        console.error("Error fetching total shops:", error);
+      }
+    };
+
+    fetchTotalSalesPersons();
+    fetchTotalShops();
+  }, []);
 
   return (
     <div className="flex justify-center min-h-screen bg-gray-50 p-4 sm:p-6">
@@ -10,12 +61,12 @@ const AdminDashboard = () => {
         {/* --- KPI Cards Section --- */}
         <div className="grid grid-cols-2 gap-5 mb-8">
           {/* Total Stores Card */}
-          <div
-            onClick={() => navigate("/admin/storespage")}
-            className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300 cursor-pointer"
-          >
+          <div className="bg-white p-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
             <p className="text-lg font-medium text-gray-700 text-center">
               Total Stores
+            </p>
+            <p className="text-3xl font-bold text-center text-gray-800 mt-2">
+              {totalShops}
             </p>
           </div>
 
@@ -24,16 +75,24 @@ const AdminDashboard = () => {
             <p className="text-lg font-medium text-gray-700 text-center">
               Total Sales Person
             </p>
+            <p className="text-3xl font-bold text-center text-gray-800 mt-2">
+              {totalSalesPersons}
+            </p>
           </div>
         </div>
 
         {/* --- Toggle Buttons Section --- */}
         <div className="flex justify-center mb-10">
           <div className="flex bg-white border border-gray-300 rounded-lg overflow-hidden shadow-sm">
-            <button className="px-6 py-2 text-sm font-medium bg-gray-700 text-white rounded-l-lg transition-colors duration-200 focus:outline-none">
+            <button
+              className="px-6 py-2 text-sm font-medium bg-gray-700 text-white rounded-l-lg transition-colors duration-200 focus:outline-none"
+            >
               Sales
             </button>
-            <button className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border-l border-gray-300 rounded-r-lg transition-colors duration-200 focus:outline-none hover:bg-gray-100">
+
+            <button
+              className="px-6 py-2 text-sm font-medium text-gray-700 bg-white border-l border-gray-300 rounded-r-lg transition-colors duration-200 focus:outline-none hover:bg-gray-100"
+            >
               Delivery
             </button>
           </div>
@@ -64,11 +123,21 @@ const AdminDashboard = () => {
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
                 <tr>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">...</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">...</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">...</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">...</td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">...</td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ...
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ...
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ...
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ...
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    ...
+                  </td>
                 </tr>
               </tbody>
             </table>
@@ -79,4 +148,4 @@ const AdminDashboard = () => {
   );
 };
 
-export default AdminDashboard;
+export default DashboardLayout;

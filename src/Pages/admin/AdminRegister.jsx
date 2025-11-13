@@ -159,7 +159,7 @@ function Register() {
         <p className="text-sm text-center text-gray-600 mt-3">
           Already have an account?{" "}
           <button
-            onClick={() => navigate("/login")}
+            onClick={() => navigate("/admin/login")}
             className="text-blue-600 hover:underline"
           >
             Login

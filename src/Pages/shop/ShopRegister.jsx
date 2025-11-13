@@ -1,30 +1,58 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 function ShopRegister() {
   const navigate = useNavigate();
   const [shop, setShop] = useState({
-    name: "",
-    owner: "",
-    phone: "",
+    shop_name: "",
+    owner_name: "",
+    email: "",
+    phonenumber: "",
     address: "",
     password: "",
   });
+  const [loading, setLoading] = useState(false);
 
-  const register = () => {
-    const { name, owner, phone, address, password } = shop;
+  const register = async () => {
+    const { shop_name, owner_name, email, phonenumber, address, password } = shop;
 
-    if (!name || !owner || !phone || !address || !password) {
+    if (!shop_name || !owner_name || !email || !phonenumber || !address || !password) {
       alert("Please fill all fields");
       return;
     }
 
-    const list = JSON.parse(localStorage.getItem("shops")) || [];
-    list.push(shop);
-    localStorage.setItem("shops", JSON.stringify(list));
+    if (password.length < 8) {
+      alert("Password must be at least 8 characters");
+      return;
+    }
 
-    alert("Shop registered successfully!");
-    navigate("/shop/login");
+    setLoading(true);
+
+    try {
+      const response = await axios.post("http://127.0.0.1:8000/blog/create-shop/", {
+        shop_name: shop_name,
+        owner_name: owner_name,
+        email: email,
+        phonenumber: phonenumber,
+        address: address,
+        password: password
+      });
+
+      if (response.status === 201) {
+        alert("Shop registered successfully!");
+        navigate("/shop/login");
+      }
+    } catch (error) {
+      if (error.response && error.response.data && error.response.data.error) {
+        alert(`Registration failed: ${error.response.data.error}`);
+      } else {
+        alert("Registration failed. Please try again.");
+      }
+      console.error("Registration error:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -38,43 +66,56 @@ function ShopRegister() {
           <input
             type="text"
             placeholder="Shop Name"
-            value={shop.name}
-            onChange={(e) => setShop({ ...shop, name: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            value={shop.shop_name}
+            onChange={(e) => setShop({ ...shop, shop_name: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
           <input
             type="text"
             placeholder="Owner Name"
-            value={shop.owner}
-            onChange={(e) => setShop({ ...shop, owner: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            value={shop.owner_name}
+            onChange={(e) => setShop({ ...shop, owner_name: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
+          />
+          <input
+            type="email"
+            placeholder="Email"
+            value={shop.email}
+            onChange={(e) => setShop({ ...shop, email: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
           <input
             type="tel"
             placeholder="Phone Number"
-            value={shop.phone}
-            onChange={(e) => setShop({ ...shop, phone: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            value={shop.phonenumber}
+            onChange={(e) => setShop({ ...shop, phonenumber: e.target.value })}
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
           <textarea
             placeholder="Address"
             value={shop.address}
             onChange={(e) => setShop({ ...shop, address: e.target.value })}
-            className="w-full px-3 py-2 border rounded resize-none"
+            className="w-full px-3 py-2 border rounded resize-none focus:outline-none focus:ring-2 focus:ring-orange-500"
+            rows="3"
           />
           <input
             type="password"
             placeholder="Password"
             value={shop.password}
             onChange={(e) => setShop({ ...shop, password: e.target.value })}
-            className="w-full px-3 py-2 border rounded"
+            className="w-full px-3 py-2 border rounded focus:outline-none focus:ring-2 focus:ring-orange-500"
           />
 
           <button
             onClick={register}
-            className="w-full py-2 bg-orange-600 text-white rounded-lg hover:bg-orange-700 transition mt-4"
+            disabled={loading}
+            className={`w-full py-2 text-white rounded-lg transition mt-4 ${
+              loading 
+                ? "bg-orange-400 cursor-not-allowed" 
+                : "bg-orange-600 hover:bg-orange-700"
+            }`}
           >
-            Register
+            {loading ? "Registering..." : "Register"}
           </button>
 
           <p className="text-sm text-center text-gray-600 mt-3">
