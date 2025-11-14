@@ -19,6 +19,8 @@ import ShopDashboard from "./pages/shop/ShopDashboard";
 // Common
 import NotFound from "./pages/NotFound";
 
+import Map from "./Pages/Map.jsx";
+
 function App() {
   return (
     <Router>
@@ -39,6 +41,7 @@ function App() {
         <Route path="/shop/register" element={<ShopRegister />} />
         <Route path="/shop/login" element={<ShopLogin />} />
         <Route path="/shop/dashboard" element={<ShopDashboard />} />
+        <Route path="/map" element={<Map />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
