@@ -21,6 +21,7 @@ import PlaceOrderPage from "./Pages/shop/PlaceOrderPage";
 
 // Common
 import NotFound from "./pages/NotFound";
+import Sales from "./Pages/admin/sales";
 
 function App() {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/admin/register" element={<AdminRegister />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={< DashboardLayout />} />
+               <Route path="sals" element={<Sales/>} />         
 
         {/* Sales */}
         <Route path="/sales/register" element={<SalesRegister />} />
