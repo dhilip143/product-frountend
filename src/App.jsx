@@ -42,8 +42,8 @@ function App() {
         <Route path="/shop/register" element={<ShopRegister />} />
         <Route path="/shop/login" element={<ShopLogin />} />
         <Route path="/shop/dashboard" element={<ShopDashboard />} />
-        <Route path="/shop/placeorderpage" element={<PlaceOrderPage />} />
         <Route path="/shop/delivery-history" element={<DeliveryHistory />} />
+        <Route path="/shop/placeorderpage" element={<PlaceOrderPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
