@@ -24,6 +24,8 @@ import NotFound from "./pages/NotFound";
 import Sales from "./Pages/admin/sales";
 
 import Map from "./Pages/Map.jsx";
+import ProductPage from "./Pages/admin/ProductPage.jsx";
+import DeliveryAddPage from "./Pages/shop/DeliveryAddPage.jsx";
 
 function App() {
   return (
@@ -48,6 +50,8 @@ function App() {
         <Route path="/shop/dashboard" element={<ShopDashboard />} />
         <Route path="/shop/placeorderpage" element={<PlaceOrderPage />} />
         <Route path="/shop/delivery-history" element={<DeliveryHistory />} />
+        <Route path="/Product" element={ <ProductPage />} />
+        <Route path="/Delivery" element={ <DeliveryAddPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
