@@ -17,11 +17,15 @@ import ShopLogin from "./pages/shop/ShopLogin";
 import ShopDashboard from "./pages/shop/ShopDashboard";
 import StoresPage from "./Pages/admin/Stores";
 import DeliveryHistory from "./Pages/shop/DeliveryHistory";
-import PlaceOrderPage from "./Pages/shop/PlaceOrderPage";
+import PlaceOrderPage from "/src/Pages/shop/PlaceOrderPage.jsx";
 
 // Common
 import NotFound from "./pages/NotFound";
 import Sales from "./Pages/admin/sales";
+
+import Map from "./Pages/Map.jsx";
+import ProductPage from "./Pages/admin/ProductPage.jsx";
+import DeliveryAddPage from "./Pages/shop/DeliveryAddPage.jsx";
 
 function App() {
   return (
@@ -33,7 +37,7 @@ function App() {
         <Route path="/admin/register" element={<AdminRegister />} />
         <Route path="/admin/login" element={<AdminLogin />} />
         <Route path="/admin/dashboard" element={< DashboardLayout />} />
-               <Route path="sals" element={<Sales/>} />         
+         <Route path="/sals" element={<Sales/>} />         
 
         {/* Sales */}
         <Route path="/sales/register" element={<SalesRegister />} />
@@ -45,7 +49,8 @@ function App() {
         <Route path="/shop/login" element={<ShopLogin />} />
         <Route path="/shop/dashboard" element={<ShopDashboard />} />
         <Route path="/shop/delivery-history" element={<DeliveryHistory />} />
-        <Route path="/shop/placeorderpage" element={<PlaceOrderPage />} />
+        <Route path="/Product" element={ <ProductPage />} />
+        <Route path="/Delivery" element={ <DeliveryAddPage />} />
 
         <Route path="*" element={<NotFound />} />
       </Routes>
