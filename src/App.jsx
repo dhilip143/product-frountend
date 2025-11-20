@@ -4,7 +4,7 @@ import Landing from "./Pages/Landing";
 // Admin
 import AdminRegister from "/src/Pages/admin/AdminRegister.jsx";
 import AdminLogin from "./pages/admin/AdminLogin";
-import  DashboardLayout from "/src/Pages/admin/AdminDashboard.jsx";
+import  DashboardLayout from "/src/Pages/admin/DashBoard/AdminDashboard.jsx";
 
 // Sales
 import SalesRegister from "./pages/sales/SalesRegister";
